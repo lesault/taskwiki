@@ -141,6 +141,18 @@ export function updateProject(id: string, patch: Partial<Project>) {
   markDirty();
 }
 
+/** Removes the project itself, but never the tasks in it — they're just
+ *  unassigned (projectId cleared), not deleted. A project is an
+ *  organizational label; the tasks are the data worth protecting. */
+export function removeProject(id: string) {
+  appState.update((s) => ({
+    ...s,
+    projects: s.projects.filter((p) => p.id !== id),
+    tasks: s.tasks.map((t) => (t.projectId === id ? { ...t, projectId: undefined } : t)),
+  }));
+  markDirty();
+}
+
 // --- Save orchestration -------------------------------------------------
 
 /**
