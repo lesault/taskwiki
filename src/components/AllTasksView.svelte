@@ -1,4 +1,7 @@
 <script lang="ts">
+  // No per-row entrance motion here, deliberately — this view is filtered by
+  // typing/selecting, and re-animating rows on every keystroke would fight
+  // the "speed over decoration" principle. Filtering should feel instant.
   import { appState } from '../lib/store';
   import { todayISO } from '../lib/util';
   import TaskRow from './TaskRow.svelte';
@@ -71,9 +74,9 @@
 </div>
 
 <style>
-  .view { padding: 12px; }
+  .view { padding: var(--space-4); max-width: 900px; }
   .count { font-weight: 400; color: var(--text-dim); font-size: 0.8em; }
-  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 14px; }
+  .filters { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-3) 0 var(--space-4); }
   .filters input { flex: 1; min-width: 160px; }
-  .empty { color: var(--text-dim); padding: 2rem; text-align: center; }
+  .empty { color: var(--text-dim); padding: var(--space-6) 0; text-align: center; }
 </style>

@@ -28,10 +28,18 @@
 </div>
 
 <style>
-  .view { padding: 12px; }
+  .view { padding: var(--space-4); max-width: 900px; }
   .count { font-weight: 400; color: var(--text-dim); font-size: 0.8em; }
-  .row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-bottom: 1px solid var(--border); }
-  .title { flex: 1; }
-  .deleted-at { color: var(--text-dim); font-size: 12px; }
-  .empty { color: var(--text-dim); padding: 2rem; text-align: center; }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-2);
+    border-bottom: 1px solid var(--border);
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  .row:hover { background: var(--surface); }
+  .title { flex: 1; color: var(--text); }
+  .deleted-at { color: var(--text-dim); font-size: 11px; font-family: var(--mono); }
+  .empty { color: var(--text-dim); padding: var(--space-6) 0; text-align: center; }
 </style>

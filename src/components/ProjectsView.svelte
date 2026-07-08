@@ -5,6 +5,7 @@
   import { appState, addProject, mintId, updateTask, logActivity } from '../lib/store';
   import { todayISO } from '../lib/util';
   import TaskRow from './TaskRow.svelte';
+  import IconArrowRight from './icons/IconArrowRight.svelte';
   import type { Task, TaskStatus } from '../lib/types';
 
   let { onEdit }: { onEdit: (task: Task) => void } = $props();
@@ -56,7 +57,7 @@
   {:else}
     <div class="tabs">
       {#each $appState.projects as p (p.id)}
-        <button class="btn subtle" class:active={p.id === selectedProjectId} onclick={() => (selectedProjectId = p.id)}>{p.name}</button>
+        <button class="tab" class:active={p.id === selectedProjectId} onclick={() => (selectedProjectId = p.id)}>{p.name}</button>
       {/each}
     </div>
 
@@ -64,13 +65,13 @@
       <div class="board">
         {#each STATUSES as status (status)}
           <div class="column">
-            <h3>{STATUS_LABEL[status]}</h3>
+            <h3>{STATUS_LABEL[status]} <span class="col-count">{projectTasks.filter((t) => t.status === status).length}</span></h3>
             {#each projectTasks.filter((t) => t.status === status) as task (task.id)}
               <div class="card">
                 <TaskRow {task} {today} {onEdit} />
                 <div class="move">
                   {#each STATUSES.filter((s) => s !== status) as target}
-                    <button class="btn subtle small" onclick={() => moveStatus(task, target)}>→ {STATUS_LABEL[target]}</button>
+                    <button class="btn subtle small" onclick={() => moveStatus(task, target)}>{STATUS_LABEL[target]}<IconArrowRight size={11} /></button>
                   {/each}
                 </div>
               </div>
@@ -83,17 +84,27 @@
 </div>
 
 <style>
-  .view { padding: 12px; }
-  .new-project { display: flex; gap: 8px; margin-bottom: 12px; }
+  .view { padding: var(--space-4); }
+  .new-project { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); max-width: 420px; }
   .new-project input { flex: 1; }
-  .tabs { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
-  .tabs .active { background: var(--accent-bg); color: var(--accent); }
-  .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .column { background: var(--bg-raised); border-radius: 8px; padding: 8px; min-height: 100px; }
-  .column h3 { font-size: 12px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
-  .card { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; }
-  .move { display: flex; flex-wrap: wrap; gap: 2px; padding: 0 6px 6px; }
+  .tabs { display: flex; gap: var(--space-1); margin-bottom: var(--space-3); flex-wrap: wrap; }
+  .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+  .column { background: var(--surface); border-radius: var(--radius-lg); padding: var(--space-2); min-height: 100px; }
+  .column h3 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    margin-bottom: var(--space-2);
+    display: flex;
+    justify-content: space-between;
+  }
+  .col-count { font-weight: 500; }
+  .card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: var(--space-2); }
+  .move { display: flex; flex-wrap: wrap; gap: 2px; padding: 0 var(--space-2) var(--space-2); }
   .btn.small { font-size: 11px; padding: 2px 6px; }
-  .empty { color: var(--text-dim); padding: 2rem; text-align: center; }
-  @media (max-width: 800px) { .board { grid-template-columns: 1fr; } }
+  .empty { color: var(--text-dim); padding: var(--space-6) 0; text-align: center; }
+  @media (max-width: 900px) { .board { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .board { grid-template-columns: 1fr; } }
 </style>

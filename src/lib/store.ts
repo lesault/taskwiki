@@ -123,6 +123,11 @@ export function restoreTask(id: string) {
   updateTask(id, { deletedAt: undefined });
 }
 
+export function updateSettings(patch: Partial<AppState['settings']>) {
+  appState.update((s) => ({ ...s, settings: { ...s.settings, ...patch } }));
+  markDirty();
+}
+
 export function addProject(project: Project) {
   appState.update((s) => ({ ...s, projects: [...s.projects, project] }));
   markDirty();

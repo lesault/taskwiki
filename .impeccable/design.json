@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-08T00:00:00Z",
+  "title": "Design System: TaskWiki",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Violet Accent",
+        "canonical": "oklch(47% 0.19 293)",
+        "tonalRamp": [
+          "oklch(20% 0.15 293)", "oklch(30% 0.17 293)", "oklch(40% 0.19 293)", "oklch(47% 0.19 293)",
+          "oklch(56% 0.21 293)", "oklch(68% 0.16 293)", "oklch(80% 0.11 293)", "oklch(92% 0.05 293)"
+        ]
+      },
+      "accent-solid": {
+        "role": "primary-fill",
+        "displayName": "Accent Solid Fill",
+        "canonical": "oklch(56% 0.21 293)",
+        "tonalRamp": ["oklch(56% 0.21 293)", "oklch(49% 0.21 293)"]
+      },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "oklch(15% 0.02 290)" },
+      "text": { "role": "neutral", "displayName": "Text", "canonical": "oklch(34% 0.02 290)" },
+      "text-dim": { "role": "neutral", "displayName": "Text Dim", "canonical": "oklch(46% 0.02 290)" },
+      "bg": {
+        "role": "neutral",
+        "displayName": "Background",
+        "canonical": "oklch(99% 0.003 290)",
+        "tonalRamp": [
+          "oklch(15% 0.02 290)", "oklch(23% 0.012 290)", "oklch(32% 0.014 290)", "oklch(46% 0.02 290)",
+          "oklch(62% 0.015 290)", "oklch(87% 0.008 290)", "oklch(96.5% 0.005 290)", "oklch(99% 0.003 290)"
+        ]
+      },
+      "surface": { "role": "neutral", "displayName": "Surface", "canonical": "oklch(96.5% 0.005 290)" },
+      "border": { "role": "neutral", "displayName": "Border (hairline)", "canonical": "oklch(87% 0.008 290)" },
+      "border-strong": { "role": "neutral", "displayName": "Border (operable)", "canonical": "oklch(62% 0.015 290)" },
+      "danger": {
+        "role": "error",
+        "displayName": "Danger",
+        "canonical": "oklch(48% 0.19 25)",
+        "tonalRamp": ["oklch(48% 0.19 25)", "oklch(78% 0.13 25)"]
+      },
+      "success": {
+        "role": "success",
+        "displayName": "Success",
+        "canonical": "oklch(43% 0.11 155)",
+        "tonalRamp": ["oklch(43% 0.11 155)", "oklch(78% 0.12 155)"]
+      },
+      "warn": {
+        "role": "warning",
+        "displayName": "Warn",
+        "canonical": "oklch(42% 0.14 55)",
+        "tonalRamp": ["oklch(42% 0.14 55)", "oklch(80% 0.13 70)"]
+      }
+    },
+    "typographyMeta": {
+      "title": { "displayName": "Title", "purpose": "View headings and modal titles." },
+      "body": { "displayName": "Body", "purpose": "Task titles, notes, prose." },
+      "label": { "displayName": "Label", "purpose": "Uppercase mono section labels." },
+      "data": { "displayName": "Data / Chip", "purpose": "Structured metadata: dates, durations, priorities, timestamps, keyboard hints — always mono per the Mono-For-Data Rule." }
+    },
+    "shadows": [
+      { "name": "modal", "value": "0 20px 48px -12px oklch(0% 0 0 / 0.18), 0 8px 20px -8px oklch(0% 0 0 / 0.12)", "purpose": "The one deliberate elevation moment — modals only." },
+      { "name": "raised", "value": "0 1px 2px oklch(0% 0 0 / 0.06)", "purpose": "Reserved for a future subtle hover-elevation state; unused today (flat-by-default)." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Default easing for all state transitions and modal/view motion." },
+      { "name": "duration-fast", "value": "120ms", "purpose": "Hover/active micro-interactions." },
+      { "name": "duration-base", "value": "180ms", "purpose": "Modal and list-item entrance transitions." },
+      { "name": "duration-slow", "value": "280ms", "purpose": "Reserved for larger layout transitions." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single most-committed action in a context (Save, Apply schedule).",
+      "html": "<button class=\"ds-btn-primary\">Save</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 6px; background: oklch(56% 0.21 293); color: white; border: 1px solid oklch(56% 0.21 293); padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; transition: background 120ms cubic-bezier(0.25,1,0.5,1), border-color 120ms cubic-bezier(0.25,1,0.5,1), transform 120ms cubic-bezier(0.25,1,0.5,1); } .ds-btn-primary:hover { background: oklch(49% 0.21 293); border-color: oklch(49% 0.21 293); } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid oklch(56% 0.21 293); outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Default action button — surface background, ink text, border shifts to accent on hover.",
+      "html": "<button class=\"ds-btn-secondary\">Export JSON</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; gap: 6px; background: oklch(96.5% 0.005 290); color: oklch(15% 0.02 290); border: 1px solid oklch(62% 0.015 290); padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; transition: border-color 120ms cubic-bezier(0.25,1,0.5,1); } .ds-btn-secondary:hover { border-color: oklch(47% 0.19 293); }"
+    },
+    {
+      "name": "Chip (accent)",
+      "kind": "chip",
+      "refersTo": "chip-accent",
+      "description": "Structured metadata label — a rectangle, never a pill. Always monospace.",
+      "html": "<span class=\"ds-chip-accent\">waiting on Jane</span>",
+      "css": ".ds-chip-accent { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 4px; font: 500 11px/1.4 ui-monospace, Consolas, monospace; letter-spacing: 0.01em; background: oklch(94% 0.03 293); color: oklch(47% 0.19 293); }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "Standard text/date input — border strengthens and fills with accent on focus.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Search title/notes…\" />",
+      "css": ".ds-input { border: 1px solid oklch(62% 0.015 290); background: oklch(99% 0.003 290); color: oklch(15% 0.02 290); padding: 6px 10px; border-radius: 6px; font-size: 15px; transition: border-color 120ms cubic-bezier(0.25,1,0.5,1); } .ds-input:hover { border-color: oklch(47% 0.19 293); } .ds-input:focus-visible { outline: 2px solid oklch(56% 0.21 293); outline-offset: -1px; border-color: oklch(56% 0.21 293); }"
+    },
+    {
+      "name": "Nav Tab",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Shared by the header view-switcher and the Projects tab strip. Active state is a tint fill, not an underline.",
+      "html": "<button class=\"ds-tab ds-tab-active\"><span class=\"ds-kbd\">1</span>Today</button>",
+      "css": ".ds-tab { display: inline-flex; align-items: center; gap: 5px; background: transparent; border: 1px solid transparent; color: oklch(46% 0.02 290); padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; transition: background 120ms cubic-bezier(0.25,1,0.5,1), color 120ms cubic-bezier(0.25,1,0.5,1); } .ds-tab:hover { background: oklch(96.5% 0.005 290); color: oklch(15% 0.02 290); } .ds-tab-active { background: oklch(94% 0.03 293); color: oklch(47% 0.19 293); } .ds-kbd { font-family: ui-monospace, Consolas, monospace; font-size: 10px; font-weight: 600; background: transparent; border: 1px solid oklch(87% 0.008 290); border-radius: 3px; padding: 1px 4px; }"
+    },
+    {
+      "name": "Task Row Checkbox",
+      "kind": "custom",
+      "refersTo": "task-checkbox",
+      "description": "The signature interactive element — an outline square that fills solid with an inverse checkmark on completion, not a native checkbox.",
+      "html": "<button class=\"ds-check\" aria-label=\"Mark done\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><rect x=\"3.5\" y=\"3.5\" width=\"13\" height=\"13\" rx=\"3\" fill=\"currentColor\"/><path d=\"M6.2 10.3l2.4 2.4 5.2-5.6\" stroke=\"oklch(99% 0.003 290)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg></button>",
+      "css": ".ds-check { background: none; border: none; padding: 2px; color: oklch(47% 0.19 293); display: flex; cursor: pointer; transition: color 120ms cubic-bezier(0.25,1,0.5,1), transform 120ms cubic-bezier(0.25,1,0.5,1); } .ds-check:hover { transform: scale(1.08); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Instrument Panel",
+    "overview": "TaskWiki is built to feel like a precision instrument, not a consumer habit-tracker — dense, legible readouts you scan in a second between other work, controls that respond instantly, and nothing on screen that isn't carrying information. It draws on the same lineage as Linear and Things 3: restrained color, a single clear accent, strong typographic hierarchy through weight and size rather than boxes and shadows, and a dark-mode-native canvas that feels like an editor or terminal rather than a marketing surface. This system explicitly rejects the generic AI-SaaS look — gradient text, cream/sand backgrounds, hero-metric cards, tiny uppercase tracked eyebrows, glassmorphism — and rejects the cute, bouncy consumer to-do app register. There is no audience to persuade here; it's a private instrument for one person, used dozens of times a day, and every visual decision optimizes for speed-to-scan over decoration.",
+    "keyCharacteristics": [
+      "Dense, legible, dark-mode-native, fully correct in light mode",
+      "One violet accent carrying identity; status colors used only functionally, never decoratively",
+      "Structured metadata rendered in monospace, prose rendered in system sans",
+      "Flat by default — elevation exists only for modals",
+      "Every interactive element has a visible keyboard focus ring; shortcuts shown as literal kbd chips"
+    ],
+    "rules": [
+      { "name": "The Solid Fill Rule", "body": "Never reuse the text-tint accent/danger/success/warn tokens as a solid button background — accent-solid is a separate, fixed-across-themes token verified against white text in both themes.", "section": "colors" },
+      { "name": "The One Hue Rule", "body": "Every neutral carries the same 290° hue at near-zero chroma — there is no separate gray, which keeps a restrained single-accent palette cohesive.", "section": "colors" },
+      { "name": "The Mono-For-Data Rule", "body": "If a piece of UI text is a value someone would search, sort, or paste (a date, duration, ID-like status, keyboard key), it's set in mono. If it's a sentence a human wrote, it's set in sans.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Depth comes from the bg/surface background-color step, not from shadows. Shadows are reserved for the one moment something is genuinely floating above the page: a modal.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do set every piece of structured data in mono",
+      "Do use accent-solid (not accent) for any solid button fill with white text",
+      "Do keep chips as small rectangles, never pills",
+      "Do give every interactive element a visible :focus-visible ring",
+      "Do respect prefers-reduced-motion for every transition"
+    ],
+    "donts": [
+      "Don't use the generic AI-SaaS scaffold: gradient text, cream/sand backgrounds, hero-metric cards, tracked eyebrows, glassmorphism, decorative numbered markers",
+      "Don't reach for a cute/bouncy consumer-app register: rounded pastel cards, mascots, celebratory emoji, confetti",
+      "Don't use emoji as interface iconography anywhere — every icon is a hand-drawn inline SVG",
+      "Don't add a shadow to routine content — shadows are reserved for modals only",
+      "Don't use border-left/border-right as a colored accent stripe on any card, callout, or list item"
+    ]
+  }
+}

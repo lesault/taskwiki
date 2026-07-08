@@ -2,10 +2,14 @@
   // The reminder surface: since a static file can't push notifications when
   // closed, this landing view IS the reminder — "here's what to work on
   // right now" — shown whenever the file is opened.
+  import { fly } from 'svelte/transition';
   import { appState } from '../lib/store';
   import { todayISO, isOverdue, isDueToday } from '../lib/util';
   import { generateBulkDayPlan, downloadIcs } from '../lib/ics';
+  import { listItemIn } from '../lib/motion';
   import TaskRow from './TaskRow.svelte';
+  import IconCalendar from './icons/IconCalendar.svelte';
+  import IconWarning from './icons/IconWarning.svelte';
   import type { Task } from '../lib/types';
 
   let { onEdit }: { onEdit: (task: Task) => void } = $props();
@@ -71,23 +75,23 @@
 <div class="view">
   <div class="header-row">
     <h2>Today</h2>
-    <button class="btn" onclick={exportTodayPlan}>📅 Export today's plan as .ics</button>
+    <button class="btn" onclick={exportTodayPlan}><IconCalendar />Export today's plan as .ics</button>
   </div>
-  {#if overflowWarning}<p class="warn">⚠️ {overflowWarning}</p>{/if}
+  {#if overflowWarning}<p class="warn"><IconWarning size={14} />{overflowWarning}</p>{/if}
 
   {#if workOnNow}
     <div class="spotlight">
-      <div class="spotlight-label">Work on this right now:</div>
+      <div class="spotlight-label">Work on this right now</div>
       <TaskRow task={workOnNow} {today} project={projectFor(workOnNow)} {onEdit} />
     </div>
   {:else}
-    <p class="empty">Nothing overdue or due today. 🎉</p>
+    <p class="empty">Nothing overdue or due today.</p>
   {/if}
 
   {#if overdue.length > 0}
     <h3 class="danger">Overdue ({overdue.length})</h3>
-    {#each overdue as task (task.id)}
-      <TaskRow {task} {today} project={projectFor(task)} {onEdit} />
+    {#each overdue as task, i (task.id)}
+      <div in:fly={listItemIn(i)}><TaskRow {task} {today} project={projectFor(task)} {onEdit} /></div>
     {/each}
   {/if}
 
@@ -95,35 +99,55 @@
   {#if dueOrPlannedToday.length === 0}
     <p class="empty small">Nothing else scheduled for today.</p>
   {:else}
-    {#each dueOrPlannedToday as task (task.id)}
-      <TaskRow {task} {today} project={projectFor(task)} {onEdit} />
+    {#each dueOrPlannedToday as task, i (task.id)}
+      <div in:fly={listItemIn(i)}><TaskRow {task} {today} project={projectFor(task)} {onEdit} /></div>
     {/each}
   {/if}
 
   {#if waitingNeedsChase.length > 0}
     <h3 class="warn">Waiting-for needing a chase ({waitingNeedsChase.length})</h3>
-    {#each waitingNeedsChase as task (task.id)}
-      <TaskRow {task} {today} project={projectFor(task)} {onEdit} />
+    {#each waitingNeedsChase as task, i (task.id)}
+      <div in:fly={listItemIn(i)}><TaskRow {task} {today} project={projectFor(task)} {onEdit} /></div>
     {/each}
   {/if}
 
   {#if upcoming.length > 0}
     <h3>Upcoming (next 7 days)</h3>
-    {#each upcoming as task (task.id)}
-      <TaskRow {task} {today} project={projectFor(task)} {onEdit} />
+    {#each upcoming as task, i (task.id)}
+      <div in:fly={listItemIn(i)}><TaskRow {task} {today} project={projectFor(task)} {onEdit} /></div>
     {/each}
   {/if}
 </div>
 
 <style>
-  .view { padding: 12px; }
+  .view { padding: var(--space-4); max-width: 900px; }
   .header-row { display: flex; justify-content: space-between; align-items: center; }
-  .warn { color: var(--warn); font-size: 13px; }
-  h3 { margin: 20px 0 4px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-dim); }
+  .warn { color: var(--warn); font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  h3 {
+    margin: var(--space-5) 0 var(--space-1);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+  }
   h3.danger { color: var(--danger); }
   h3.warn { color: var(--warn); }
-  .spotlight { border: 1px solid var(--accent); border-radius: 8px; background: var(--accent-bg); margin: 12px 0 20px; }
-  .spotlight-label { font-weight: 600; font-size: 13px; padding: 8px 10px 0; color: var(--accent); }
-  .empty { color: var(--text-dim); padding: 1rem; }
-  .empty.small { padding: 0.5rem 0; font-size: 13px; }
+  .spotlight {
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-lg);
+    background: var(--accent-tint);
+    margin: var(--space-3) 0 var(--space-5);
+    overflow: hidden;
+  }
+  .spotlight-label {
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: var(--space-3) var(--space-3) 0;
+    color: var(--accent);
+  }
+  .empty { color: var(--text-dim); padding: var(--space-4) 0; }
+  .empty.small { padding: var(--space-2) 0; font-size: 13px; }
 </style>

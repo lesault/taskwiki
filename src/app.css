@@ -1,21 +1,67 @@
+/*
+  Design tokens — see DESIGN.md for the full system rationale.
+
+  Two accent roles, deliberately kept separate:
+  - --accent      : for text/icons/focus rings. Tuned per theme so it reads
+                    against that theme's background (dark violet on light
+                    bg, light violet on dark bg).
+  - --accent-solid: for solid button fills with white text on top. Fixed
+                    across both themes at a mid-tone that clears 4.5:1
+                    against white in both — reusing --accent here for a
+                    button fill was the bug this replaced (light-mode
+                    --accent is dark and fine as a fill, but dark-mode
+                    --accent is a *light* lavender, which combined with
+                    white button text failed contrast badly).
+*/
 :root {
-  --text: #3a3a3a;
-  --text-h: #08060d;
-  --text-dim: #767676;
-  --bg: #fff;
-  --bg-raised: #f7f7f8;
-  --border: #dcdce0;
-  --accent: #6d28d9;
-  --accent-bg: rgba(109, 40, 217, 0.08);
-  --danger: #b42318;
-  --danger-bg: rgba(180, 35, 24, 0.08);
-  --success: #067647;
-  --success-bg: rgba(6, 118, 71, 0.08);
-  --warn: #b54708;
-  --warn-bg: rgba(181, 71, 8, 0.08);
+  --ink: oklch(15% 0.02 290);
+  --text: oklch(34% 0.02 290);
+  --text-dim: oklch(46% 0.02 290);
+  --bg: oklch(99% 0.003 290);
+  --surface: oklch(96.5% 0.005 290);
+  --border: oklch(87% 0.008 290);
+  --border-strong: oklch(62% 0.015 290);
+
+  --accent: oklch(47% 0.19 293);
+  --accent-tint: oklch(94% 0.03 293);
+  --accent-solid: oklch(56% 0.21 293);
+  --accent-solid-hover: oklch(49% 0.21 293);
+
+  --danger: oklch(48% 0.19 25);
+  --danger-tint: oklch(94% 0.03 25);
+  --success: oklch(43% 0.11 155);
+  --success-tint: oklch(93% 0.03 155);
+  --warn: oklch(42% 0.14 55);
+  --warn-tint: oklch(94% 0.04 70);
+
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-  font: 15px/1.45 var(--sans);
+  --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 280ms;
+
+  --shadow-modal: 0 20px 48px -12px oklch(0% 0 0 / 0.18), 0 8px 20px -8px oklch(0% 0 0 / 0.12);
+  --shadow-raised: 0 1px 2px oklch(0% 0 0 / 0.06);
+
+  --z-sticky: 10;
+  --z-modal-backdrop: 100;
+  --z-modal: 101;
+  --z-toast: 200;
+
+  font: 15px/1.5 var(--sans);
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
@@ -23,76 +69,171 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #d4d4d8;
-    --text-h: #f4f4f5;
-    --text-dim: #9a9aa2;
-    --bg: #17171b;
-    --bg-raised: #202024;
-    --border: #303036;
-    --accent: #c4b5fd;
-    --accent-bg: rgba(196, 181, 253, 0.12);
-    --danger: #f87171;
-    --danger-bg: rgba(248, 113, 113, 0.12);
-    --success: #6ee7b7;
-    --success-bg: rgba(110, 231, 183, 0.12);
-    --warn: #fbbf24;
-    --warn-bg: rgba(251, 191, 36, 0.12);
+    --ink: oklch(97% 0.005 290);
+    --text: oklch(84% 0.01 290);
+    --text-dim: oklch(66% 0.012 290);
+    --bg: oklch(18% 0.01 290);
+    --surface: oklch(23% 0.012 290);
+    --border: oklch(32% 0.014 290);
+    --border-strong: oklch(50% 0.02 290);
+
+    --accent: oklch(80% 0.11 293);
+    --accent-tint: oklch(28% 0.05 293);
+
+    --danger: oklch(78% 0.13 25);
+    --danger-tint: oklch(28% 0.06 25);
+    --success: oklch(78% 0.12 155);
+    --success-tint: oklch(27% 0.05 155);
+    --warn: oklch(80% 0.13 70);
+    --warn-tint: oklch(29% 0.06 70);
+
+    --shadow-modal: 0 20px 48px -12px oklch(0% 0 0 / 0.5), 0 8px 20px -8px oklch(0% 0 0 / 0.35);
+    --shadow-raised: 0 1px 2px oklch(0% 0 0 / 0.3);
   }
+}
+
+/* Explicit overrides win over the media query in either direction, for a
+   future manual theme toggle (see App.svelte's data-theme attribute). */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --ink: oklch(15% 0.02 290); --text: oklch(34% 0.02 290); --text-dim: oklch(46% 0.02 290);
+  --bg: oklch(99% 0.003 290); --surface: oklch(96.5% 0.005 290); --border: oklch(87% 0.008 290);
+  --border-strong: oklch(62% 0.015 290);
+  --accent: oklch(47% 0.19 293); --accent-tint: oklch(94% 0.03 293);
+  --danger: oklch(48% 0.19 25); --danger-tint: oklch(94% 0.03 25);
+  --success: oklch(43% 0.11 155); --success-tint: oklch(93% 0.03 155);
+  --warn: oklch(42% 0.14 55); --warn-tint: oklch(94% 0.04 70);
+  --shadow-modal: 0 20px 48px -12px oklch(0% 0 0 / 0.18), 0 8px 20px -8px oklch(0% 0 0 / 0.12);
+  --shadow-raised: 0 1px 2px oklch(0% 0 0 / 0.06);
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --ink: oklch(97% 0.005 290); --text: oklch(84% 0.01 290); --text-dim: oklch(66% 0.012 290);
+  --bg: oklch(18% 0.01 290); --surface: oklch(23% 0.012 290); --border: oklch(32% 0.014 290);
+  --border-strong: oklch(50% 0.02 290);
+  --accent: oklch(80% 0.11 293); --accent-tint: oklch(28% 0.05 293);
+  --danger: oklch(78% 0.13 25); --danger-tint: oklch(28% 0.06 25);
+  --success: oklch(78% 0.12 155); --success-tint: oklch(27% 0.05 155);
+  --warn: oklch(80% 0.13 70); --warn-tint: oklch(29% 0.06 70);
+  --shadow-modal: 0 20px 48px -12px oklch(0% 0 0 / 0.5), 0 8px 20px -8px oklch(0% 0 0 / 0.35);
+  --shadow-raised: 0 1px 2px oklch(0% 0 0 / 0.3);
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
 #app { display: flex; flex-direction: column; min-height: 100vh; }
-h1, h2, h3 { color: var(--text-h); font-weight: 600; margin: 0; }
+h1, h2, h3 { color: var(--ink); font-weight: 600; margin: 0; }
+h1 { font-size: 20px; letter-spacing: -0.01em; }
+h2 { font-size: 19px; letter-spacing: -0.01em; }
 button, input, textarea, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 
-.badge {
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visible on every interactive element, not just inputs — non-negotiable
+   for a keyboard-first tool. */
+:focus-visible {
+  outline: 2px solid var(--accent-solid);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Chips: small structured metadata (status, priority, dates, durations).
+   Deliberately a rounded rectangle, not a pill — pills read as soft/consumer;
+   this reads as a label in a technical tool. Set in mono, since chips
+   represent structured data, not prose. */
+.chip {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  font: 500 11px/1.4 var(--mono);
+  letter-spacing: 0.01em;
   border: 1px solid var(--border);
+  color: var(--text-dim);
+  white-space: nowrap;
 }
-.badge.danger { background: var(--danger-bg); color: var(--danger); border-color: transparent; }
-.badge.success { background: var(--success-bg); color: var(--success); border-color: transparent; }
-.badge.warn { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
-.badge.accent { background: var(--accent-bg); color: var(--accent); border-color: transparent; }
+.chip svg { width: 12px; height: 12px; flex-shrink: 0; }
+.chip.danger { background: var(--danger-tint); color: var(--danger); border-color: transparent; }
+.chip.success { background: var(--success-tint); color: var(--success); border-color: transparent; }
+.chip.warn { background: var(--warn-tint); color: var(--warn); border-color: transparent; }
+.chip.accent { background: var(--accent-tint); color: var(--accent); border-color: transparent; }
 
 .btn {
-  border: 1px solid var(--border);
-  background: var(--bg-raised);
-  color: var(--text-h);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--ink);
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 13px;
+  font-weight: 500;
+  transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
+.btn svg { width: 14px; height: 14px; flex-shrink: 0; }
 .btn:hover { border-color: var(--accent); }
-.btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn:active { transform: scale(0.97); }
+.btn.primary { background: var(--accent-solid); color: white; border-color: var(--accent-solid); }
+.btn.primary:hover { background: var(--accent-solid-hover); border-color: var(--accent-solid-hover); }
 .btn.subtle { background: transparent; border-color: transparent; }
-.btn.subtle:hover { background: var(--bg-raised); }
+.btn.subtle:hover { background: var(--surface); border-color: var(--border); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:disabled:hover { border-color: var(--border-strong); background: var(--surface); }
 
 input[type='text'], input[type='date'], textarea, select {
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   background: var(--bg);
-  color: var(--text-h);
+  color: var(--ink);
   padding: 6px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-fast) var(--ease-out);
 }
-input[type='text']:focus, textarea:focus, select:focus {
-  outline: 2px solid var(--accent);
+input[type='text']:hover, input[type='date']:hover, textarea:hover, select:hover {
+  border-color: var(--accent);
+}
+input[type='text']:focus-visible, input[type='date']:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent-solid);
   outline-offset: -1px;
+  border-color: var(--accent-solid);
 }
+input::placeholder, textarea::placeholder { color: var(--text-dim); opacity: 1; }
 
 .modal-backdrop {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  position: fixed; inset: 0; background: oklch(0% 0 0 / 0.45);
   display: flex; align-items: flex-start; justify-content: center;
-  padding: 4vh 1rem; z-index: 100; overflow-y: auto;
+  padding: 4vh 1rem; z-index: var(--z-modal-backdrop); overflow-y: auto;
 }
 .modal {
-  background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-  max-width: 640px; width: 100%; padding: 1.25rem; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  max-width: 640px; width: 100%; padding: 1.25rem; box-shadow: var(--shadow-modal);
 }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.icon-spin { animation: spin 0.8s linear infinite; }
+
+/* Shared by the header view-switcher and the Projects tab strip. */
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+.tab:hover { background: var(--surface); color: var(--ink); }
+.tab.active { background: var(--accent-tint); color: var(--accent); }

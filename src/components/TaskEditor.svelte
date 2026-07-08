@@ -1,6 +1,11 @@
 <script lang="ts">
+  import { fade, scale } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
   import { appState, updateTask, logActivity, softDeleteTask, mintId, addProject } from '../lib/store';
   import { generateTaskIcs, downloadIcs } from '../lib/ics';
+  import { motionDuration } from '../lib/motion';
+  import IconX from './icons/IconX.svelte';
+  import IconCalendar from './icons/IconCalendar.svelte';
   import type { Task, TaskStatus, TaskDirection, Priority } from '../lib/types';
 
   let { taskId, onClose }: { taskId: string; onClose: () => void } = $props();
@@ -111,11 +116,11 @@
 {#if task}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="modal-backdrop" onclick={(e) => e.target === e.currentTarget && onClose()}>
-    <div class="modal">
+  <div class="modal-backdrop" onclick={(e) => e.target === e.currentTarget && onClose()} transition:fade={{ duration: motionDuration(140) }}>
+    <div class="modal" transition:scale={{ duration: motionDuration(160), start: 0.97, opacity: 0, easing: quintOut }}>
       <div class="modal-header">
         <input class="title-input" type="text" bind:value={title} onblur={commitTitle} placeholder="Task title" />
-        <button class="btn subtle" onclick={onClose} aria-label="Close">✕</button>
+        <button class="btn subtle icon-only" onclick={onClose} aria-label="Close"><IconX /></button>
       </div>
 
       <div class="grid">
@@ -190,8 +195,8 @@
       </label>
 
       <div class="ics-actions">
-        <button class="btn" onclick={exportIcsReminder}>📅 Export reminder .ics</button>
-        <button class="btn" onclick={exportIcsBlock}>📅 Export time-block .ics</button>
+        <button class="btn" onclick={exportIcsReminder}><IconCalendar />Export reminder .ics</button>
+        <button class="btn" onclick={exportIcsBlock}><IconCalendar />Export time-block .ics</button>
       </div>
 
       <div class="activity">
@@ -216,23 +221,25 @@
 {/if}
 
 <style>
-  .modal-header { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
-  .title-input { flex: 1; font-size: 16px; font-weight: 600; border: none; background: none; padding: 4px; }
-  .title-input:focus { outline: 1px solid var(--border); border-radius: 6px; }
-  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
+  .modal-header { display: flex; gap: var(--space-2); align-items: center; margin-bottom: var(--space-3); }
+  .title-input { flex: 1; font-size: 16px; font-weight: 600; border: 1px solid transparent; background: none; padding: 4px 6px; border-radius: var(--radius-sm); }
+  .title-input:hover { border-color: var(--border); }
+  .icon-only { padding: 6px; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); margin-bottom: var(--space-3); }
   label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-dim); }
-  label.block { margin-bottom: 10px; }
-  .new-project-inline { display: flex; gap: 6px; margin-bottom: 10px; }
+  label.block { margin-bottom: var(--space-3); }
+  .new-project-inline { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); }
   .new-project-inline input { flex: 1; }
-  .source-link { display: inline-block; margin: -6px 0 10px; font-size: 13px; }
+  .source-link { display: inline-block; margin: -6px 0 var(--space-3); font-size: 13px; color: var(--accent); }
   textarea { width: 100%; resize: vertical; font-family: inherit; }
-  .ics-actions { display: flex; gap: 8px; margin: 12px 0; }
-  .activity { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 10px; }
-  .activity h3 { font-size: 13px; margin-bottom: 6px; }
+  .ics-actions { display: flex; gap: var(--space-2); margin: var(--space-3) 0; }
+  .activity { margin-top: var(--space-4); border-top: 1px solid var(--border); padding-top: var(--space-3); }
+  .activity h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2); color: var(--text-dim); }
   .activity ul { list-style: none; padding: 0; margin: 0; max-height: 140px; overflow-y: auto; }
   .activity li { font-size: 12px; color: var(--text-dim); padding: 3px 0; }
   .activity .at { color: var(--text); font-family: var(--mono); font-size: 11px; }
   .empty { color: var(--text-dim); font-size: 13px; }
-  .footer { display: flex; justify-content: space-between; margin-top: 14px; }
+  .footer { display: flex; justify-content: space-between; margin-top: var(--space-4); }
   .btn.danger { color: var(--danger); }
+  .btn.danger:hover { background: var(--danger-tint); border-color: var(--danger); }
 </style>

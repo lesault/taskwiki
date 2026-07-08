@@ -4,6 +4,7 @@
   // doing so would let the next save overwrite a merely-corrupted file with
   // nothing, turning recoverable damage into permanent data loss.
   import { importJsonBackup } from '../lib/store';
+  import IconWarning from './icons/IconWarning.svelte';
 
   let { error, rawIsland }: { error: string; rawIsland: string | null } = $props();
 
@@ -22,7 +23,7 @@
 </script>
 
 <div class="wrap">
-  <h1>⚠️ This file's data could not be loaded</h1>
+  <h1><IconWarning size={22} />This file's data could not be loaded</h1>
   <p>
     The task planner refused to start normally because its embedded data
     could not be parsed. Continuing would risk your next save overwriting
@@ -55,8 +56,22 @@
 </div>
 
 <style>
-  .wrap { max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
-  .error { background: var(--danger-bg); color: var(--danger); padding: 0.5rem 0.75rem; border-radius: 6px; }
-  textarea { width: 100%; font-family: var(--mono); font-size: 12px; margin: 0.5rem 0; }
-  ol { padding-left: 1.2rem; }
+  .wrap { max-width: 720px; margin: var(--space-6) auto; padding: 0 var(--space-4); }
+  h1 { display: flex; align-items: center; gap: var(--space-2); color: var(--danger); font-size: 20px; }
+  h2 { margin-top: var(--space-5); font-size: 15px; }
+  .error {
+    background: var(--danger-tint);
+    color: var(--danger);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-3);
+  }
+  textarea {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 12px;
+    margin: var(--space-2) 0;
+  }
+  ol { padding-left: 1.2rem; color: var(--text); }
+  p { margin: var(--space-2) 0; }
 </style>
