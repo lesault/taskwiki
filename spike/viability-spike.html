@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Viability Spike — Portable Task Planner</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.3rem; }
+  .check { padding: 0.75rem 1rem; margin: 0.5rem 0; border-radius: 6px; border: 1px solid #ccc; }
+  .pass { background: #e6ffed; border-color: #2da44e; }
+  .fail { background: #ffebe9; border-color: #cf222e; }
+  .pending { background: #f6f8fa; }
+  button { font-size: 1rem; padding: 0.4rem 0.8rem; cursor: pointer; }
+  code { background: #f6f8fa; padding: 0.1rem 0.3rem; border-radius: 3px; }
+  #results { white-space: pre-wrap; font-family: monospace; font-size: 0.85rem; background: #f6f8fa; padding: 1rem; border-radius: 6px; }
+</style>
+</head>
+<body>
+<h1>Portable Task Planner — Viability Spike</h1>
+<p>
+  This file tests whether the single-file, self-saving app model will work in
+  <strong>your actual corporate browser</strong>. Save this file to disk, then
+  <strong>double-click it to open via <code>file://</code></strong> (not via a
+  local dev server — that would give a false pass). Run each check below in order.
+</p>
+
+<div id="check-origin" class="check pending">
+  <strong>0. Origin check</strong> — <span id="origin-result">running…</span>
+</div>
+
+<div id="check-module" class="check pending">
+  <strong>1. Inline ES module execution</strong> — does an inline
+  <code>&lt;script type="module"&gt;</code> run from <code>file://</code>?
+  <div id="module-result">running…</div>
+</div>
+
+<div id="check-csp" class="check pending">
+  <strong>2. Inline script / CSP check</strong> — is this inline
+  <code>&lt;script&gt;</code> (non-module) executing at all? If your corporate
+  browser policy or a security extension blocks inline scripts, this file
+  would already be broken before you read this line.
+  <div id="csp-result">running…</div>
+</div>
+
+<div id="check-fsapi" class="check pending">
+  <strong>3. File System Access API — in-place save</strong> —
+  click the button, pick <em>this same file</em> (or a test file) as the save
+  target, and confirm it writes without error.
+  <div>
+    <button id="btn-fsapi">Test showSaveFilePicker() + write</button>
+  </div>
+  <div id="fsapi-result">not yet run</div>
+</div>
+
+<div id="check-download" class="check pending">
+  <strong>4. Download fallback</strong> — confirm a plain Blob download works
+  (this should always work, even if #3 fails).
+  <div>
+    <button id="btn-download">Test Blob download</button>
+  </div>
+  <div id="download-result">not yet run</div>
+</div>
+
+<div class="check pending">
+  <strong>5. Mail-gateway / DLP survival (manual)</strong> — email this file
+  (as an attachment) to yourself through your normal corporate mail system,
+  or share it via whatever channel you'd normally use to carry the planner
+  around. Confirm it arrives intact, unquarantined, and un-stripped, and that
+  it still runs all the checks above when reopened from the received copy.
+  <div>Result: <em>record manually — not automatable from inside the page</em></div>
+</div>
+
+<h2>Summary</h2>
+<div id="results">Run all checks above, then read this summary.</div>
+
+<script>
+  // Non-module inline script — tests CSP allows inline scripts at all.
+  document.getElementById('check-csp').className = 'check pass';
+  document.getElementById('csp-result').textContent =
+    '✅ PASS — inline (non-module) script executed. If you see this, CSP is not blocking inline scripts.';
+</script>
+
+<script type="module">
+  const origin = window.location.origin;
+  const protocol = window.location.protocol;
+  const originEl = document.getElementById('origin-result');
+  const originCheck = document.getElementById('check-origin');
+  originEl.textContent = `protocol=${protocol}  origin=${origin}`;
+  if (protocol === 'file:') {
+    originCheck.className = 'check pass';
+    originEl.textContent += '  ✅ Opened via file:// as expected.';
+  } else {
+    originCheck.className = 'check fail';
+    originEl.textContent += '  ⚠️ Not file:// — you\'re likely running this from a dev server. Re-test by double-clicking the saved .html file directly.';
+  }
+
+  // This code itself running proves inline module execution works from file://
+  const moduleCheck = document.getElementById('check-module');
+  document.getElementById('module-result').textContent =
+    '✅ PASS — this text was set by code inside an inline <script type="module">, so inline module execution works from file://.';
+  moduleCheck.className = 'check pass';
+
+  const log = (msg) => {
+    const r = document.getElementById('results');
+    r.textContent += '\n' + msg;
+  };
+
+  document.getElementById('btn-fsapi').addEventListener('click', async () => {
+    const el = document.getElementById('fsapi-result');
+    const box = document.getElementById('check-fsapi');
+    if (!('showSaveFilePicker' in window)) {
+      box.className = 'check fail';
+      el.textContent = '❌ FAIL — showSaveFilePicker is not available in this browser/context. In-place save is NOT viable here; the app would need to rely on download-only.';
+      log('FS Access API: NOT AVAILABLE (showSaveFilePicker undefined)');
+      return;
+    }
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: 'viability-spike-test.html',
+        types: [{ description: 'HTML file', accept: { 'text/html': ['.html'] } }]
+      });
+      const writable = await handle.createWritable();
+      await writable.write('<!-- viability spike write test ' + new Date().toISOString() + ' -->\n');
+      await writable.close();
+      box.className = 'check pass';
+      el.textContent = '✅ PASS — showSaveFilePicker + createWritable + write + close all succeeded. In-place save is viable.';
+      log('FS Access API: PASS (write succeeded)');
+    } catch (err) {
+      box.className = 'check fail';
+      el.textContent = '❌ FAIL — threw: ' + err.name + ': ' + err.message + '. In-place save is NOT viable here (blocked by policy, secure-context requirement, or user cancel — try again if you cancelled).';
+      log('FS Access API: FAIL (' + err.name + ': ' + err.message + ')');
+    }
+  });
+
+  document.getElementById('btn-download').addEventListener('click', () => {
+    const el = document.getElementById('download-result');
+    const box = document.getElementById('check-download');
+    try {
+      const blob = new Blob(['<!-- viability spike download test -->\n'], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'viability-spike-download-test.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      box.className = 'check pass';
+      el.textContent = '✅ PASS — download triggered. Check your Downloads folder for viability-spike-download-test.html.';
+      log('Download fallback: PASS (triggered — verify file appeared in Downloads)');
+    } catch (err) {
+      box.className = 'check fail';
+      el.textContent = '❌ FAIL — ' + err.name + ': ' + err.message;
+      log('Download fallback: FAIL (' + err.name + ': ' + err.message + ')');
+    }
+  });
+
+  log('--- Viability Spike Log ---');
+  log('protocol: ' + protocol);
+  log('origin: ' + origin);
+  log('userAgent: ' + navigator.userAgent);
+  log('showSaveFilePicker present: ' + ('showSaveFilePicker' in window));
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Inline data-URI favicon — no external file reference, keeps this a single portable file. -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%85%3C/text%3E%3C/svg%3E" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskWiki</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!--
+      DATA ISLAND — this is the app's entire database. It is NOT rendered
+      content; Svelte mounts into #app above, never into this script tag.
+
+      On save, the app takes a pristine copy of this document (captured
+      before Svelte ever mounted) and does a bounded string replacement of
+      everything between the DATA-START / DATA-END markers below, so the
+      save routine never serializes the live, Svelte-mutated DOM.
+
+      The JSON body has every `<` escaped to `<` before being written
+      here, because <script type="application/json"> is an HTML raw-text
+      element — the browser does NOT escape `<` inside it. Without this
+      escaping, a task note containing the literal string "</script>"
+      would truncate the file and corrupt both the data and the app on
+      the next save. See src/lib/persistence.ts for the implementation.
+    -->
+    <!--DATA-START--><script id="app-data" type="application/json">{}</script><!--DATA-END-->
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
